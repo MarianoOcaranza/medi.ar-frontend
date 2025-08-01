@@ -1,11 +1,61 @@
 "use client";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { BriefcaseMedical, CircleUser, ArrowLeft} from "lucide-react";
 import PersonalInfo from "./PersonalInfo";
 
 const Register = () => {
 	const [step, setStep] = useState(1);
 	const [role, setRole] = useState("");
+	const [formData, setFormData] = useState({
+		username: '',
+		email: '',
+		password: '',
+		firstName: '',
+		lastName: '',
+		provincia: '',
+		localidad: '',
+		phone: '',
+		matriculaNac: '',
+		matriculaProv: '',
+		specialty: '',
+		modalidad: ''
+	})
+
+	const handleChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
+		event.preventDefault();
+		const { name, value } = event.target;
+		setFormData((prev => ({
+			...prev,
+			[name]: value,
+			})
+		))
+	}
+
+	
+	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+		event.preventDefault();
+		console.log(formData);
+	}
+	
+	const cancelForm = () => {
+		setStep(1);
+		setRole("");
+		setFormData({
+			username: '',
+			email: '',
+			password: '',
+			firstName: '',
+			lastName: '',
+			provincia: '',
+			localidad: '',
+			phone: '',
+			matriculaNac: '',
+			matriculaProv: '',
+			specialty: '',
+			modalidad: ''
+		})
+	}
+
 
   	return (
     <>
@@ -37,25 +87,32 @@ const Register = () => {
 					`shadow-lg rounded-xl p-6 w-[90vw] md:w-1/2 flex gap-4 flex-col border
 					${role == 'PROFESIONAL' ? 'border-violet-600/50 bg-violet-100' : 'border-blue-300 bg-blue-100'}`
 				}
+				onSubmit={(e)=>{e.preventDefault; setStep(3);}}
 			>
 				<ArrowLeft 
 					className={
 						`cursor-pointer 
 						${role == 'PROFESIONAL' ? 'text-violet-500 hover:text-violet-700' : 'text-blue-500 hover:text-blue-800'} transition-colors`
 					} 
-					onClick={() => { setStep(1); setRole(""); }}
+					onClick={cancelForm}
 				/>
 
 				<PersonalInfo 
 					role={`${role == 'PROFESIONAL' ? 'profesional' : 'paciente'}`} 
 					textColor={`${role == 'PROFESIONAL' ? 'text-violet-700' : 'text-blue-800'}`} 
 					borderColor={`${role == 'PROFESIONAL' ? 'border-violet-300' : 'border-blue-300'}`}
+					onChange={handleChange}
+					username={formData.username}
+					email={formData.email}
+					firstName={formData.firstName}
+					lastName={formData.lastName}
+					provincia={formData.provincia}
+					localidad={formData.localidad}
 				/>
 				
 				<button
 					className={`p-2 ${role == 'PROFESIONAL' ? 'bg-indigo-500 hover:bg-indigo-700' : 'bg-emerald-400 hover:bg-emerald-600'}  text-white font-semibold rounded-md shadow-md transition-colors duration-300`}
-					type="submit"
-					onSubmit={()=>{setStep(3);}}>
+					type="submit">
 					Siguiente
 				</button>
 			</form>
@@ -64,9 +121,11 @@ const Register = () => {
 			<>
 			<form 
 				className={
-					`shadow-lg rounded-xl p-6 w-[90vw] md:w-1/2 flex gap-4 flex-col border
+					`shadow-lg items-center rounded-xl p-6 w-[90vw] md:w-1/2 flex gap-4 flex-col border
 					${role == 'PROFESIONAL' ? 'border-violet-600/50 bg-violet-100' : 'border-blue-300 bg-blue-100'}`
-				}>
+				}
+				onSubmit={handleSubmit}
+				>
 				<ArrowLeft 
 					className={
 						`cursor-pointer 
@@ -75,8 +134,24 @@ const Register = () => {
 					onClick={() => { setStep(2) }}
 				/>
 				{role == "PACIENTE" && (
-					<p>Paciente</p>
+					<div className="flex flex-col justify-center w-1/2">
+						<label htmlFor="phone" className={`font-extralight`}>(OPCIONAL) ¿Te gustaría agregar un teléfono?</label>
+						<input
+							type="tel"
+							autoComplete="off"
+							name="phone"
+							id="phone"
+							placeholder="Ej: CABA, Merlo, etc..."
+							onChange={handleChange}
+							className={`border bg-white p-2 text-sm rounded-md shadow-sm focus:ring-2 focus:ring-current focus:outline-none`}
+						/>
+					</div>
 				)}
+				<button
+					className={`p-2 ${role == 'PROFESIONAL' ? 'bg-indigo-500 hover:bg-indigo-700' : 'bg-emerald-400 hover:bg-emerald-600'}  text-white font-semibold rounded-md shadow-md transition-colors duration-300`}
+					type="submit">
+					Finalizar
+				</button>
 			</form>
 			</>
 		)}

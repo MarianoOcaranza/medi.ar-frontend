@@ -22,7 +22,7 @@ const LoginPage: React.FC = () => {
                         type="text" 
                         id='username'
                         placeholder='Ingrese su nombre de usuario' 
-                        className='border p-1 text-sm rounded-sm border-neutral-400 shadow-md'
+                        className='border border-neutral-400 bg-white p-2 text-sm rounded-md shadow-sm focus:ring-2 focus:ring-current focus:outline-none'
                     />
                 </div>
                 <div className="flex flex-col">
@@ -38,7 +38,7 @@ const LoginPage: React.FC = () => {
                         type="password"
                         id="password"
                         placeholder='Ingrese su contraseña'
-                        className='border p-1 text-sm rounded-sm border-neutral-400 shadow-md'
+                        className='border border-neutral-400 bg-white p-2 text-sm rounded-md shadow-sm focus:ring-2 focus:ring-current focus:outline-none'
                     />
                 </div>
                 <button className='p-2 bg-indigo-400 hover:bg-indigo-600 text-white rounded-sm transition-colors duration-300' type='submit'>
