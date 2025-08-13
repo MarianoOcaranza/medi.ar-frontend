@@ -1,9 +1,12 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { BriefcaseMedical, CircleUser, ArrowLeft} from "lucide-react";
 import PersonalInfo from "./PersonalInfo";
+import { registerPatient } from "@/services/authService";
+import { useRouter } from "next/navigation";
 
 const Register = () => {
+	const router = useRouter();
 	const [step, setStep] = useState(1);
 	const [role, setRole] = useState("");
 	const [formData, setFormData] = useState({
@@ -21,7 +24,7 @@ const Register = () => {
 		modalidad: ''
 	})
 
-	const handleChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
+	const handleChange: React.ChangeEventHandler<HTMLInputElement | HTMLSelectElement> = (event) => {
 		event.preventDefault();
 		const { name, value } = event.target;
 		setFormData((prev => ({
@@ -30,14 +33,25 @@ const Register = () => {
 			})
 		))
 	}
-
 	
 	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
-		console.log(formData);
+		try {
+			if (role == "PACIENTE") {
+				registerPatient(formData);
+				alert("¡Paciente registrado con éxito!");
+				clearForm();
+				router.push("/login")
+				
+			} else {
+				alert('NOOOOO');
+			}
+		} catch (error: any) {
+			console.log(error.message);
+		}
 	}
 	
-	const cancelForm = () => {
+	const clearForm = () => {
 		setStep(1);
 		setRole("");
 		setFormData({
@@ -85,7 +99,7 @@ const Register = () => {
 			<form 
 				className={
 					`shadow-lg rounded-xl p-6 w-[90vw] md:w-1/2 flex gap-4 flex-col border
-					${role == 'PROFESIONAL' ? 'border-violet-600/50 bg-violet-100' : 'border-blue-300 bg-blue-100'}`
+					bg-white`
 				}
 				onSubmit={(e)=>{e.preventDefault; setStep(3);}}
 			>
@@ -94,7 +108,7 @@ const Register = () => {
 						`cursor-pointer 
 						${role == 'PROFESIONAL' ? 'text-violet-500 hover:text-violet-700' : 'text-blue-500 hover:text-blue-800'} transition-colors`
 					} 
-					onClick={cancelForm}
+					onClick={clearForm}
 				/>
 
 				<PersonalInfo 
@@ -139,13 +153,91 @@ const Register = () => {
 						<input
 							type="tel"
 							autoComplete="off"
+							value={formData.phone}
 							name="phone"
 							id="phone"
-							placeholder="Ej: CABA, Merlo, etc..."
+							placeholder="Número de teléfono"
 							onChange={handleChange}
 							className={`border bg-white p-2 text-sm rounded-md shadow-sm focus:ring-2 focus:ring-current focus:outline-none`}
 						/>
 					</div>
+				)}
+				{role == "PROFESIONAL" && (
+					<>
+						<label htmlFor="phone" className="text-sm font-medium">
+						(OPCIONAL) ¿Te gustaría agregar un teléfono?
+						</label>
+						<input
+						type="tel"
+						value={formData.phone}
+						autoComplete="off"
+						name="phone"
+						id="phone"
+						placeholder="Número de teléfono"
+						onChange={handleChange}
+						className="w-full border border-gray-300 bg-white p-2 rounded-md shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none transition"
+						/>
+
+						<label htmlFor="matriculaNac" className="text-sm font-medium">
+						(OPCIONAL) Matrícula Nacional
+						</label>
+						<input
+						type="text"
+						autoComplete="off"
+						name="matriculaNac"
+						value={formData.matriculaNac}
+						id="matriculaNac"
+						placeholder="Número de matrícula"
+						onChange={handleChange}
+						className="w-full border border-gray-300 bg-white p-2 rounded-md shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none transition"
+						/>
+
+						<label htmlFor="matriculaProv" className="text-sm font-medium">
+						(OPCIONAL) Matrícula Provincial
+						</label>
+						<input
+						type="text"
+						autoComplete="off"
+						value={formData.matriculaProv}
+						name="matriculaProv"
+						id="matriculaProv"
+						placeholder="Número de matrícula provincial"
+						onChange={handleChange}
+						className="w-full border border-gray-300 bg-white p-2 rounded-md shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none transition"
+						/>
+
+						<label htmlFor="specialty" className="text-sm font-medium">
+						Especialidad
+						</label>
+						<input
+						type="text"
+						autoComplete="off"
+						name="specialty"
+						value={formData.specialty}
+						id="specialty"
+						placeholder="Ej: Psicología, Gastroenterología..."
+						onChange={handleChange}
+						className="w-full border border-gray-300 bg-white p-2 rounded-md shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none transition"
+						required
+						/>
+
+						<label htmlFor="modalidad" className="text-sm font-medium">
+						Modalidad de Atención
+						</label>
+						<select
+						name="modalidad"
+						id="modalidad"
+						value={formData.modalidad}
+						onChange={handleChange}
+						className="w-full border border-gray-300 bg-white p-2 rounded-md shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none transition"
+						required
+						>
+						<option value="" disabled>Seleccione una modalidad</option>
+						<option value="PRESENCIAL">Presencial</option>
+						<option value="VIRTUAL">Virtual</option>
+						<option value="HIBRIDA">Híbrida</option>
+						</select>
+					</>
 				)}
 				<button
 					className={`p-2 ${role == 'PROFESIONAL' ? 'bg-indigo-500 hover:bg-indigo-700' : 'bg-emerald-400 hover:bg-emerald-600'}  text-white font-semibold rounded-md shadow-md transition-colors duration-300`}

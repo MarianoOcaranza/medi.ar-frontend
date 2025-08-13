@@ -3,10 +3,12 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import React from "react";
+import { useAuthStore } from "@/store/authStore";
 
 const Header: React.FC = () => {
 	const [isMobile, setIsMobile] = useState(true);
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
+	const {isLogged, logout, user} = useAuthStore();
 
 	// hook to manage the window's size
 	useEffect(() => {
@@ -53,18 +55,21 @@ const Header: React.FC = () => {
 									<li className="hover:underline hover:text-lg cursor-pointer transition-all duration-300">
 										¿Qué es medi.ar?
 									</li>
-									<Link
-										href="/register"
-										className="hover:underline hover:text-lg cursor-pointer transition-all duration-300"
-										onClick={() => setIsMenuOpen(false)}
-									>
-										¡Creá tu cuenta gratis!
-									</Link>
+									{!isLogged && (
+										<Link
+											href="/register"
+											className="hover:underline hover:text-lg cursor-pointer transition-all duration-300"
+											onClick={() => setIsMenuOpen(false)}
+										>
+											¡Creá tu cuenta gratis!
+										</Link>
+									)}
 									<li className="hover:underline hover:text-lg cursor-pointer transition-all duration-300">
 										Contacto
 									</li>
 								</ul>
 								<span className="flex items-center justify-center mt-5 text-black">
+								{(!isLogged && user == null) ? 
 									<Link
 										href="/login"
 										onClick={() => setIsMenuOpen(false)}
@@ -72,6 +77,12 @@ const Header: React.FC = () => {
 									>
 										Iniciar sesión
 									</Link>
+								:
+									<div className='flex'>
+										<p>¡Hola! {user?.username}</p>
+										<button onClick={logout}>logout</button>
+									</div>
+								}
 								</span>
 							</nav>
 						</>
@@ -90,24 +101,33 @@ const Header: React.FC = () => {
 							<li className="hover:underline hover:text-lg cursor-pointer transition-all duration-300">
 								¿Qué es medi.ar?
 							</li>
+							{!isLogged && (
 							<Link
 								href="/register"
 								className="hover:underline hover:text-lg cursor-pointer transition-all duration-300"
 							>
 								¡Creá tu cuenta gratis!
 							</Link>
+							)}
 							<li className="hover:underline hover:text-lg cursor-pointer transition-all duration-300">
 								Contacto
 							</li>
 						</ul>
 					</nav>
 					<span className="flex items-center text-black">
+					{(!isLogged && user == null) ? 
 						<Link
 							href="/login"
 							className="cursor-pointer font-extralight p-2 pl-4 pr-4 bg-emerald-300 rounded-xs hover:bg-emerald-800 hover:text-white transition-all duration-300"
 						>
 							Iniciar sesión
 						</Link>
+					:
+						<div className='flex'>
+							<p>¡Hola! {user?.username}</p>
+							<button onClick={logout}>logout</button>
+						</div>
+					}
 					</span>
 				</>
 			)}

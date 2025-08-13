@@ -1,3 +1,4 @@
+import ClientAuthProvider from "@/components/ClientAuthProvider";
 import "./globals.css";
 import Header from "@/components/Header";
 import { ReactNode } from "react";
@@ -8,7 +9,9 @@ export default function RootLayout({ children }: {children: ReactNode}) {
     <html lang="en">
       <body>
         <Header />
-        {children}
+        <ClientAuthProvider>
+          {children}
+        </ClientAuthProvider>
       </body>
     </html>
   );
