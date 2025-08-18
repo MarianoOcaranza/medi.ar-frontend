@@ -10,9 +10,6 @@ const ClientAuthProvider = ({ children }: { children: ReactNode })=> {
     const pathname = usePathname();
 
     useEffect(() => {
-        const skipCheck = ['/login', '/register']
-        if(skipCheck.includes(pathname)) return;
-
         check().catch(() => {
             //Aca van a ir las rutas protegidas del front (cuando las haga)
         });

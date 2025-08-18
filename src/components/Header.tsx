@@ -78,9 +78,9 @@ const Header: React.FC = () => {
 										Iniciar sesión
 									</Link>
 								:
-									<div className='flex'>
-										<p>¡Hola! {user?.username}</p>
-										<button onClick={logout}>logout</button>
+									<div className='flex flex-col gap-1 mt-5'>
+										<p className='text-white'>¡Hola {user?.username}!</p>
+										<button className='text-red-500 cursor-pointer'onClick={logout}>Salir</button>
 									</div>
 								}
 								</span>
@@ -123,9 +123,9 @@ const Header: React.FC = () => {
 							Iniciar sesión
 						</Link>
 					:
-						<div className='flex'>
-							<p>¡Hola! {user?.username}</p>
-							<button onClick={logout}>logout</button>
+						<div className='flex gap-4'>
+							<p className='text-white'>¡Hola {user?.username}!</p>
+							<button className='text-red-500 cursor-pointer'onClick={logout}>Salir</button>
 						</div>
 					}
 					</span>

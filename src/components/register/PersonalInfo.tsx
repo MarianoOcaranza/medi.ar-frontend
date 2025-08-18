@@ -27,9 +27,10 @@ const PersonalInfo = ({
 		localidad: string,
 
 	}) => {
+
 	return (
 		<>
-			<h1 className={`text-xl font-medium text-center ${textColor}`}>
+			<h1 className={`text-xl text-center ${textColor}`}>
 				Registrarse como {role}
 			</h1>
 
@@ -73,6 +74,16 @@ const PersonalInfo = ({
 					id="password"
 					name="password"
 					placeholder="Ingrese su contraseña"
+					onChange={onChange}
+					className={`border ${borderColor} bg-white p-2 text-sm rounded-md shadow-sm focus:ring-2 focus:ring-current focus:outline-none`}
+				/>
+				<label htmlFor="confirm-password" className={`${textColor} font-extralight mt-2`}>Confirmar contraseña</label>
+				<input
+					required
+					type="password"
+					id="confirmPassword"
+					name="confirmPassword"
+					placeholder="Repita su contraseña"
 					onChange={onChange}
 					className={`border ${borderColor} bg-white p-2 text-sm rounded-md shadow-sm focus:ring-2 focus:ring-current focus:outline-none`}
 				/>

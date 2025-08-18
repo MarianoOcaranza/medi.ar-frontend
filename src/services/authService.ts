@@ -11,6 +11,20 @@ interface RegisterPatientData {
 	provincia: string,
 	localidad: string,
 	phone: string,
+	
+}
+
+interface RegisterProfessionalData {
+	username: string,
+	email: string,
+	password: string,
+	firstName: string,
+	lastName: string,
+	provincia: string,
+	localidad: string,
+	phone: string,
+	matriculaNac: string,
+	matriculaProv: string
 	specialty: string,
 	modalidad: string
 }
@@ -24,9 +38,23 @@ interface LoginResponse {
 	role: string,
 }
 
+export const registerProfessional = async(data: RegisterProfessionalData)=> {
+	try {
+		const response = await axios.post(`${API_URL}/auth/professionals`, data);
+		return response;
+	} catch(err: any) {
+		throw err;
+	}
+
+}
+
 export const registerPatient = async(data: RegisterPatientData) => {
-    const response = await axios.post(`${API_URL}/auth/patients`, data);
-    return response;
+    try {
+		const response = await axios.post(`${API_URL}/auth/patients`, data);
+		return response;
+	} catch(err: any) {
+		throw err;
+	}
 }
 
 export const login = async(data: UserLoginData) => {

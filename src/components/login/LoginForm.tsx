@@ -2,16 +2,23 @@
 import { useAuthStore } from "@/store/authStore"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
+import toast from "react-hot-toast"
 
 const LoginForm: React.FC = ()=> {
-    const { login, error, loading } = useAuthStore();
+    const { isLogged, login, error, loading } = useAuthStore();
     const [message, setMessage] = useState("");
     const [formData, setFormData] = useState({
         username: '',
         password: ''
     })
     const router = useRouter()
+
+    useEffect(()=> {
+		if (isLogged) {
+			router.replace('/'); 
+		}
+	}, [isLogged, router])
 
     const handleChange: React.ChangeEventHandler<HTMLInputElement> = (event)=> {
         event.preventDefault();
@@ -27,11 +34,13 @@ const LoginForm: React.FC = ()=> {
         event.preventDefault();
         try {
             await login(formData);
+            toast.success(`Bienvenido, ${formData.username}`);
             setFormData({username: '', password: ''});
             setMessage("");
-            router.push('/')
+            router.push('/');
         } catch(err: any) {
             setMessage(err.response?.data?.message || "Por favor, provee credenciales válidas");
+            toast.error("Prueba de nuevo");
         }
     }
 

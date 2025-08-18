@@ -1,18 +1,21 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BriefcaseMedical, CircleUser, ArrowLeft} from "lucide-react";
 import PersonalInfo from "./PersonalInfo";
-import { registerPatient } from "@/services/authService";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
+import { useAuthStore } from "@/store/authStore";
 
 const Register = () => {
 	const router = useRouter();
+	const {isLogged, loading, error, registerPatient, registerProfessional} = useAuthStore();
 	const [step, setStep] = useState(1);
 	const [role, setRole] = useState("");
 	const [formData, setFormData] = useState({
 		username: '',
 		email: '',
 		password: '',
+		confirmPassword: '',
 		firstName: '',
 		lastName: '',
 		provincia: '',
@@ -24,6 +27,12 @@ const Register = () => {
 		modalidad: ''
 	})
 
+	useEffect(()=> {
+		if (isLogged) {
+			router.replace('/'); 
+		}
+	}, [isLogged, router])
+
 	const handleChange: React.ChangeEventHandler<HTMLInputElement | HTMLSelectElement> = (event) => {
 		event.preventDefault();
 		const { name, value } = event.target;
@@ -33,21 +42,61 @@ const Register = () => {
 			})
 		))
 	}
-	
-	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+
+	const validateForm = ()=> {
+		formData.username = formData.username.trim();
+		formData.firstName = formData.firstName.trim();
+		formData.lastName = formData.lastName.trim();
+		formData.provincia = formData.provincia.trim();
+		formData.localidad = formData.localidad.trim();
+
+		if(formData.username.length < 4) {
+			toast.error("El nombre de usuario es muy corto");
+			return false;
+		}
+		if (formData.password.length < 8) {
+			toast.error("La contraseña debe tener al menos 8 caracteres");
+			return false;
+		}
+		if(formData.confirmPassword !== formData.password) {
+			toast.error("Las contraseñas no coinciden");
+			return false;
+		}
+
+    	if (!/[A-Z]/.test(formData.password) || !/[0-9]/.test(formData.password)) {
+			toast.error("La contraseña debe tener al menos una mayúscula y un número");
+			return false;
+		}
+		return true;
+	}
+
+	const handleNextStep = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
+
+		if(!validateForm()) return;
+
+		console.log(formData)
+		setStep(3);
+	}
+	
+	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+		event.preventDefault();
+
 		try {
 			if (role == "PACIENTE") {
-				registerPatient(formData);
-				alert("¡Paciente registrado con éxito!");
+				await registerPatient(formData);
 				clearForm();
+				toast.success("¡Registro exitoso!")
 				router.push("/login")
 				
-			} else {
-				alert('NOOOOO');
+			} else if(role == "PROFESIONAL") {
+				await registerProfessional(formData);
+				clearForm();
+				toast.success("¡Registro exitoso!")
+				router.push("/login");
 			}
-		} catch (error: any) {
-			console.log(error.message);
+		} catch (err: any) {
+			toast.error(err.response?.data?.message || "Error no controlado");
 		}
 	}
 	
@@ -58,6 +107,7 @@ const Register = () => {
 			username: '',
 			email: '',
 			password: '',
+			confirmPassword: '',
 			firstName: '',
 			lastName: '',
 			provincia: '',
@@ -98,10 +148,10 @@ const Register = () => {
 		{step == 2 && (
 			<form 
 				className={
-					`shadow-lg rounded-xl p-6 w-[90vw] md:w-1/2 flex gap-4 flex-col border
+					`shadow-lg rounded-xl p-4 mt-5 mb-5 w-[90vw] md:w-1/2 flex gap-4 flex-col
 					bg-white`
 				}
-				onSubmit={(e)=>{e.preventDefault; setStep(3);}}
+				onSubmit={handleNextStep}
 			>
 				<ArrowLeft 
 					className={
@@ -239,11 +289,13 @@ const Register = () => {
 						</select>
 					</>
 				)}
-				<button
-					className={`p-2 ${role == 'PROFESIONAL' ? 'bg-indigo-500 hover:bg-indigo-700' : 'bg-emerald-400 hover:bg-emerald-600'}  text-white font-semibold rounded-md shadow-md transition-colors duration-300`}
-					type="submit">
-					Finalizar
-				</button>
+				<button 
+                	className={`p-2 ${loading ? 'bg-neutral-600' : 'bg-indigo-400 hover:bg-indigo-600'} text-white rounded-sm transition-colors duration-300`}
+                	type='submit'
+                	disabled={loading ? true : false}
+                	>
+                    	{loading ? 'Cargando...' : 'Finalizar'}
+            	</button>
 			</form>
 			</>
 		)}
