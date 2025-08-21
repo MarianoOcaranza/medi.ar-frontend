@@ -1,3 +1,4 @@
+import SearchBar from "@/components/SearchBar"
 import { CalendarCheck2, Search, User, UserRoundSearch } from "lucide-react"
 import React from "react"
 
@@ -9,21 +10,8 @@ const Home: React.FC = ()=> {
 				<h1 className="md:text-4xl py-2 w-full text-xl font-extrabold tracking-tighter text-neutral-300 bg-gradient-to-r from-transparent via-black to-transparent text-center">
 					Conectá al instante con el profesional que necesitás!
 				</h1>
-				<div className="flex flex-col items-center w-full max-w-md gap-4">
-					<div className="flex items-center w-full rounded-full bg-white/90 shadow-md backdrop-blur-sm overflow-hidden">
-						<Search className="text-gray-500 ml-4" />
-						<input
-							type="text"
-							placeholder="Buscar profesional o especialidad..."
-							className="flex-1 px-4 py-2 bg-transparent focus:outline-none text-gray-800 placeholder-gray-500"
-						/>
-					</div>
-					<button className="w-full py-2 bg-indigo-600 hover:bg-indigo-700 transition text-white font-medium rounded-full shadow-md">
-						Buscar
-					</button>
-				</div>
+				<SearchBar />
 			</main>
-			
 			{/* Seccion de tres cards informativas */}
 			<article className="flex flex-col md:flex-row justify-center items-stretch gap-6 px-4 py-10 bg-white">
 

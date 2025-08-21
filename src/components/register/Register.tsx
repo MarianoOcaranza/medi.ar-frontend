@@ -90,6 +90,10 @@ const Register = () => {
 				router.push("/login")
 				
 			} else if(role == "PROFESIONAL") {
+				if(!/^\d{5,10}$/.test(formData.matriculaNac.trim())) {
+					toast.error('La matricula no es válida')
+					return;
+				}
 				await registerProfessional(formData);
 				clearForm();
 				toast.success("¡Registro exitoso!")
@@ -229,7 +233,7 @@ const Register = () => {
 						/>
 
 						<label htmlFor="matriculaNac" className="text-sm font-medium">
-						(OPCIONAL) Matrícula Nacional
+						(OBLIGATORIO) Matrícula Nacional
 						</label>
 						<input
 						type="text"
@@ -237,6 +241,7 @@ const Register = () => {
 						name="matriculaNac"
 						value={formData.matriculaNac}
 						id="matriculaNac"
+						required
 						placeholder="Número de matrícula"
 						onChange={handleChange}
 						className="w-full border border-gray-300 bg-white p-2 rounded-md shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none transition"

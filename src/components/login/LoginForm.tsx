@@ -34,7 +34,7 @@ const LoginForm: React.FC = ()=> {
         event.preventDefault();
         try {
             await login(formData);
-            toast.success(`Bienvenido, ${formData.username}`);
+            toast.success(`Hola, ${formData.username}!`);
             setFormData({username: '', password: ''});
             setMessage("");
             router.push('/');
