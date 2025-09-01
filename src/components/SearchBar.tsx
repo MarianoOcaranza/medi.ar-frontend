@@ -6,18 +6,23 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const SearchBar: React.FC = () =>{
-    const {loading, error, professionals, search} = useSearchStore();
+    const {loading, error, search} = useSearchStore();
+    const [lastQuery, setLastQuery] = useState("");
     const [searchValue, setSearchValue] = useState("");
     const router = useRouter()
 
     const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (event)=> {
         event.preventDefault()
-        try {
-            await search(searchValue, 0);
-            router.push('/professionals');
-        } catch(err: any) {
-            throw err
-        }
+        if(searchValue === lastQuery && searchValue != "") return;
+        
+        const params = new URLSearchParams({
+            search: searchValue.trim(),
+            page: "0"
+        })
+
+        setLastQuery(searchValue.trim());
+
+        router.push(`/professionals?${params.toString()}`)
     }
 
      const handleChange: React.ChangeEventHandler<HTMLInputElement> = (event)=> {
@@ -41,7 +46,8 @@ const SearchBar: React.FC = () =>{
             </div>
             <button 
                 className="w-full py-2 bg-indigo-600 hover:bg-indigo-700 transition text-white font-medium rounded-full shadow-md"
-                type='submit'>
+                type='submit'
+                >
                 Buscar
             </button>
         </form>
